@@ -308,77 +308,6 @@ Each module is independent and can be imported separately. The main `a_maze_ing.
 
 ✅ **Makefile** - All required rules (install, run, debug, clean, lint, lint-strict)
 
-## Team & Project Management
-
-**Solo Project** - Completed independently
-
-### Development Approach
-
-1. **Phase 1**: Understanding & Algorithm Selection
-   - Studied maze generation theory
-   - Evaluated Prim's vs DFS vs other algorithms
-   - Selected DFS for elegance and educational value
-
-2. **Phase 2**: Core Implementation
-   - Implemented hexadecimal wall encoding
-   - Built DFS and Prim's algorithms
-   - Added "42" pattern detection and blocking
-
-3. **Phase 3**: Output & Validation
-   - Implemented output file format
-   - Added configuration parsing
-   - Created maze validation
-
-4. **Phase 4**: Visualization & Interactivity
-   - Built ASCII renderer with color themes
-   - Implemented interactive menu
-   - Added path visualization
-
-5. **Phase 5**: Solver Integration
-   - Implemented BFS pathfinding
-   - Integrated solver with renderer
-   - Tested path display
-
-6. **Phase 6**: Non-Perfect Mazes & Polish
-   - Added cycle generation for non-perfect mazes
-   - Fixed renderer path display bug
-   - Final testing and code cleanup
-
-### What Worked Well
-
-✅ **Hexadecimal encoding** - Elegant, compact representation
-
-✅ **Modular architecture** - Each component independent and testable
-
-✅ **DFS algorithm** - Simple yet effective, easy to extend
-
-✅ **BFS solver** - Optimal pathfinding, reliable
-
-✅ **ANSI colors** - Terminal rendering with multiple themes
-
-✅ **Configuration-driven design** - Flexible, easy to test different parameters
-
-### Could Be Improved
-
-⚠️ **Animation during generation** - Could show real-time maze carving
-
-⚠️ **Alternative visualization** - MLX graphical library not implemented
-
-⚠️ **Kruskal's algorithm** - Could add as second algorithm option
-
-⚠️ **Maze statistics** - Could track and display metrics (path length, branching factor)
-
-⚠️ **Performance optimization** - Could use numpy for very large mazes
-
-## Tools & Technologies Used
-
-- **Python 3.10+**: Main language
-- **ANSI escape codes**: Terminal color rendering
-- **Standard library only**: No external dependencies for core functionality
-- **Git**: Version control
-- **Makefile**: Build automation
-- **flake8 & mypy**: Code quality
-
 ### AI Usage
 
 AI was used primarily for:
@@ -414,11 +343,3 @@ All AI-generated code was thoroughly reviewed, tested, and understood before int
 
 - [pytest Documentation](https://docs.pytest.org/)
 - [flake8 Linter](https://flake8.pycqa.org/)
-
-## License
-
-This project is part of the 42 curriculum.
-
-## Acknowledgments
-
-Special thanks to the 42 curriculum for the engaging project brief and inspiration from the legendary Labyrinth of Knossos.
