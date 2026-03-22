@@ -23,7 +23,7 @@ def main() -> None:
 
     try:
         args: Tuple[
-            int, int, Tuple[int, int], Tuple[int, int], str, bool, int
+            int, int, Tuple[int, int], Tuple[int, int], str, bool, int, str
         ] = parser.get_args()
         engine: MazeEngine = MazeEngine(*args)
         engine.generate()

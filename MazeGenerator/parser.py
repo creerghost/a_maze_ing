@@ -26,7 +26,7 @@ class Parser:
         return config
 
     def get_args(self) -> Tuple[int, int, Tuple[int, int], Tuple[int, int],
-                                 str, bool, int]:
+                                 str, bool, int, str]:
         config = self.parse()
         width = int(config["WIDTH"])
         height = int(config["HEIGHT"])
@@ -35,5 +35,11 @@ class Parser:
         output_file = config["OUTPUT_FILE"]
         perfect = config.get("PERFECT", "False").lower() == "true"
         seed = int(config.get("SEED", "0"))
+        algorithm = config.get("ALGORITHM", "dfs").lower()
+        if algorithm not in ("prim", "dfs"):
+            raise ValueError(
+                f"Invalid ALGORITHM value: '{algorithm}'. "
+                "Must be 'prim' or 'dfs'."
+            )
         return (width, height, entry, exit_coords, output_file, perfect,
-                seed)
+                seed, algorithm)

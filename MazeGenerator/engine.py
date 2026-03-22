@@ -14,6 +14,7 @@ class MazeEngine:
         output_file: str,
         perfect: bool,
         seed: int,
+        algorithm: str,
     ) -> None:
         self.width: int = width
         self.height: int = height
@@ -22,6 +23,7 @@ class MazeEngine:
         self.output_file: str = output_file
         self.perfect: bool = perfect
         self.seed: int = seed
+        self.algorithm: str = algorithm
         self.renderer: MazeRenderer = MazeRenderer()
         self.solver: MazeSolver = MazeSolver(entry, exit_coords)
         self.grid: List[List[int]] = []
@@ -36,6 +38,7 @@ class MazeEngine:
             "OUTPUT_FILE": self.output_file,
             "PERFECT": "True" if self.perfect else "False",
             "SEED": str(self.seed),
+            "ALGORITHM": self.algorithm,
         }
         generator = MazeGenerator(config)
         generator.generate()
@@ -57,6 +60,7 @@ class MazeEngine:
             "OUTPUT_FILE": self.output_file,
             "PERFECT": "True" if self.perfect else "False",
             "SEED": str(self.seed),
+            "ALGORITHM": self.algorithm,
         }
         generator = MazeGenerator(config)
         generator.grid = self.grid

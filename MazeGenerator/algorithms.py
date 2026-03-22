@@ -91,41 +91,81 @@ class DFSAlgorithm(MazeAlgorithm):
             return
 
         start_x, start_y = 0, 0
-        visited: Set[Tuple[int, int]] = set()
-        self._dfs(grid, start_x, start_y, width, height, visited, blocked)
+        self._dfs_iterative(grid, start_x, start_y, width, height, blocked)
 
         if not perfect:
-            self._add_cycles(grid, width, height, blocked)
+            self._add_cycles_smart(grid, width, height, blocked)
 
-    def _dfs(self, grid: List[List[int]], x: int, y: int, width: int,
-             height: int, visited: Set[Tuple[int, int]],
-             blocked: Set[Tuple[int, int]]) -> None:
-        visited.add((x, y))
+    def _dfs_iterative(self, grid: List[List[int]], start_x: int,
+                       start_y: int, width: int, height: int,
+                       blocked: Set[Tuple[int, int]]) -> None:
+        visited: Set[Tuple[int, int]] = set()
+        stack: List[Tuple[Tuple[int, int], List[Tuple[int, int, int]]]] = []
 
-        neighbors: List[Tuple[int, int, int]] = []
-        for dx, dy, d in [(0, -1, self.N), (1, 0, self.E), (0, 1, self.S),
-                          (-1, 0, self.W)]:
-            nx, ny = x + dx, y + dy
-            if self._is_valid(nx, ny, width, height, blocked) and \
-                    (nx, ny) not in visited:
-                neighbors.append((nx, ny, d))
+        current = (start_x, start_y)
+        visited.add(current)
 
-        random.shuffle(neighbors)
-        for nx, ny, direction in neighbors:
-            if (nx, ny) not in visited:
-                self._open(grid, (x, y), (nx, ny), direction)
-                self._dfs(grid, nx, ny, width, height, visited, blocked)
+        while True:
+            x, y = current
+            neighbors: List[Tuple[int, int, int]] = []
+            for dx, dy, d in [(0, -1, self.N), (1, 0, self.E),
+                              (0, 1, self.S), (-1, 0, self.W)]:
+                nx, ny = x + dx, y + dy
+                if self._is_valid(nx, ny, width, height, blocked) and \
+                        (nx, ny) not in visited:
+                    neighbors.append((nx, ny, d))
 
-    def _add_cycles(self, grid: List[List[int]], width: int, height: int,
-                    blocked: Set[Tuple[int, int]]) -> None:
+            if neighbors:
+                random.shuffle(neighbors)
+                next_x, next_y, direction = neighbors[0]
+                remaining = neighbors[1:]
+                stack.append((current, remaining))
+                self._open(grid, current, (next_x, next_y), direction)
+                visited.add((next_x, next_y))
+                current = (next_x, next_y)
+            elif stack:
+                current, remaining_neighbors = stack.pop()
+                while remaining_neighbors:
+                    next_x, next_y, direction = remaining_neighbors.pop(0)
+                    if (next_x, next_y) not in visited:
+                        visited.add((next_x, next_y))
+                        self._open(grid, current, (next_x, next_y), direction)
+                        current = (next_x, next_y)
+                        break
+                else:
+                    if not stack:
+                        break
+            else:
+                break
+
+    def _add_cycles_smart(self, grid: List[List[int]], width: int,
+                          height: int,
+                          blocked: Set[Tuple[int, int]]) -> None:
+        cells_to_connect = list(range(width * height))
+        random.shuffle(cells_to_connect)
+
         num_cycles = max(1, (width * height) // 20)
-        for _ in range(num_cycles):
-            x = random.randint(0, width - 1)
-            y = random.randint(0, height - 1)
-            if (x, y) not in blocked:
-                for dx, dy, d in [(0, -1, self.N), (1, 0, self.E),
-                                  (0, 1, self.S), (-1, 0, self.W)]:
-                    nx, ny = x + dx, y + dy
-                    if self._is_valid(nx, ny, width, height, blocked):
-                        if random.random() < 0.3:
-                            self._open(grid, (x, y), (nx, ny), d)
+        cycles_added = 0
+
+        for cell_idx in cells_to_connect:
+            if cycles_added >= num_cycles:
+                break
+
+            x = cell_idx % width
+            y = cell_idx // width
+
+            if (x, y) in blocked:
+                continue
+
+            neighbors: List[Tuple[int, int, int]] = []
+            for dx, dy, d in [(0, -1, self.N), (1, 0, self.E),
+                              (0, 1, self.S), (-1, 0, self.W)]:
+                nx, ny = x + dx, y + dy
+                if self._is_valid(nx, ny, width, height, blocked):
+                    if (grid[y][x] & d) != 0:
+                        neighbors.append((nx, ny, d))
+
+            if neighbors:
+                nx, ny, d = neighbors[0]
+                self._open(grid, (x, y), (nx, ny), d)
+                cycles_added += 1
