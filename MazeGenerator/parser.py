@@ -1,5 +1,5 @@
 import os
-from typing import Dict
+from typing import Dict, Tuple
 
 
 class Parser:
@@ -24,3 +24,16 @@ class Parser:
                 k, v = line.split('=', 1)
                 config[k.strip()] = v.strip()
         return config
+
+    def get_args(self) -> Tuple[int, int, Tuple[int, int], Tuple[int, int],
+                                 str, bool, int]:
+        config = self.parse()
+        width = int(config["WIDTH"])
+        height = int(config["HEIGHT"])
+        entry = tuple(map(int, config["ENTRY"].split(",")))
+        exit_coords = tuple(map(int, config["EXIT"].split(",")))
+        output_file = config["OUTPUT_FILE"]
+        perfect = config.get("PERFECT", "False").lower() == "true"
+        seed = int(config.get("SEED", "0"))
+        return (width, height, entry, exit_coords, output_file, perfect,
+                seed)

@@ -1,33 +1,70 @@
 import sys
+from typing import Tuple
 from MazeGenerator.parser import Parser
-from MazeGenerator.validator import Validator
-from typing import Dict
+from MazeGenerator.engine import MazeEngine
 
 
-def a_maze_ing() -> None:
-    argc: int = len(sys.argv)
+def print_menu() -> None:
+    print("\n--- Maze Generator Menu ---")
+    print("g - Generate new maze (autosave to file)")
+    print("s - Show/Hide solution path")
+    print("t - Next theme")
+    print("q - Quit")
+    print("---------------------------")
 
-    if argc != 2:
-        print("Usage: python3 a_maze_ing.py config.txt")
-        sys.exit(1)
 
-    filepath: str = sys.argv[1]
+def main() -> None:
+    if len(sys.argv) != 2:
+        print("Usage: python3 a_maze_ing.py <path_to_config>")
+        return
+
+    config_path: str = sys.argv[1]
+    parser: Parser = Parser(config_path)
 
     try:
-        parser: Parser = Parser(filepath)
-        config_data: Dict[str, str] = parser.parse()
+        args: Tuple[
+            int, int, Tuple[int, int], Tuple[int, int], str, bool, int
+        ] = parser.get_args()
+        engine: MazeEngine = MazeEngine(*args)
+        engine.generate()
+        engine.solve()
+        engine.save()
 
-        validator: Validator = Validator(config_data)
-        validator.validate()
+        show_path: bool = False
+        while True:
+            theme_name: str = engine.renderer.get_current_theme_name()
+            print(f"Current Theme: {theme_name}")
+            print(f"Output File: {engine.output_file} (Autosaved)")
+            print(f"Show Path: {'ON' if show_path else 'OFF'}")
 
-        print("Configuration successfully loaded and validated!")
-    except (FileNotFoundError, ValueError, KeyError) as e:
-        print(f"Error: {e}")
-        sys.exit(1)
-    except Exception as e:
-        print(f"An unexpected error occured: {e}")
-        sys.exit(1)
+            engine.show(with_path=show_path)
+            print_menu()
+
+            choice: str = input("Select action: ").lower().strip()
+
+            if choice == "g":
+                engine.seed += 1
+                engine.generate()
+                engine.solve()
+                engine.save()
+            elif choice == "s":
+                show_path = not show_path
+            elif choice == "t":
+                engine.renderer.next_theme()
+            elif choice == "q":
+                print("Goodbye!")
+                break
+            else:
+                input("Invalid command. Press Enter to try again...")
+            print("\033[H\033[J", end="")
+
+    except FileNotFoundError:
+        print(f"Error: File '{config_path}' not found.")
+    except ValueError as error:
+        print(f"Error in config file: {error}")
+    except OSError as error:
+        print(f"System error: {error}")
 
 
 if __name__ == "__main__":
-    a_maze_ing()
+    main()

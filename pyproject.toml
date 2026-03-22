@@ -1,0 +1,34 @@
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mazegen"
+version = "1.0.0"
+description = "A maze generator with solver and ASCII visualization"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [
+    {name = "42 Student"}
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Games/Entertainment :: Puzzle Games",
+    "Development Status :: 4 - Beta",
+]
+
+[project.urls]
+Homepage = "https://github.com/42/a_maze_ing"
+Documentation = "https://github.com/42/a_maze_ing#readme"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["MazeGenerator*"]
+
+[tool.setuptools.package-data]
+MazeGenerator = ["py.typed"]

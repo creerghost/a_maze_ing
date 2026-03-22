@@ -1,0 +1,7 @@
+include README.md
+include LICENSE
+include requirements.txt
+include Makefile
+include config.txt
+recursive-include MazeGenerator *.py
+recursive-include tests *.py
